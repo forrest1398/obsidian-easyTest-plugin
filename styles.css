@@ -6,3 +6,10 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+.test-input {
+	width: 2.25em;
+	text-align: center;
+	border: 1px solid #ccc;
+	margin: 0 0.05em 0.1em 0.05em;
+	font-size: medium;
+}

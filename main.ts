@@ -107,6 +107,31 @@ class TestModal extends Modal {
 	onOpen() {
 		this.contentEl.createEl("h1", { text: this.title });
 		this.component.load();
+
+		// content 수정
+		// 볼드체를 각 글자별 <input>으로 변경
+		this.content = this.content.replace(
+			/\*\*(.*?)\*\*/g,
+			(match: string, group: string) => {
+				return (
+					group
+						// 글자 단위로 split
+						.split("")
+						// 글자마다 input 생성
+						.map((char: string) => {
+							// 띄어쓰기는 input이 아닌 span태그로 변환
+							if (char === " ") {
+								return `<span style="display: inline-block; width: 10px;"></span>`;
+							}
+
+							return `<input class="test-input" type="text" maxlength="1"/>`;
+						})
+						.join("")
+				); // Recombine characters
+			}
+		);
+
+		// 마크다운 문자열을 html element로 레더링
 		MarkdownRenderer.render(
 			this.app,
 			this.content,
