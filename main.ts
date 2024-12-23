@@ -55,8 +55,9 @@ export default class EasyTestPlugin extends Plugin {
 				}
 
 				const markdownContent = doc.getValue() || "";
+				const title = this.app.workspace.getActiveFile()?.basename;
 
-				new TestModal(this.app, markdownContent).open();
+				new TestModal(this.app, title, markdownContent).open();
 			}
 		);
 
@@ -90,13 +91,16 @@ export default class EasyTestPlugin extends Plugin {
 class TestModal extends Modal {
 	component: Component;
 	content: string;
+	title: string;
 
-	constructor(app: App, content: any) {
+	constructor(app: App, title: any, content: any) {
 		super(app);
 		this.content = content;
 		this.component = new Component();
+		this.title = title;
 	}
 	onOpen() {
+		this.contentEl.createEl("h1", { text: this.title });
 		this.component.load();
 		MarkdownRenderer.render(
 			this.app,
