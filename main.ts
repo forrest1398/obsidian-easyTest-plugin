@@ -142,7 +142,7 @@ class TestModal extends Modal {
 
 							const id = `ch_${inputCounter}`;
 							inputCounter++;
-							return `<input id="${id}" class="test-input ${charClass} _clr" type="text" maxlength="1" 
+							return `<input id="${id}" class="test-input ${charClass} " type="text" maxlength="1" 
 									data-char="${char}"/>`;
 						})
 						.join("")
@@ -178,6 +178,7 @@ class TestModal extends Modal {
 					}
 				}
 			});
+
 			// 비어있는 input에서 Backspace를 입력 시, previous input으로 focus이동
 			input.addEventListener("keydown", (event) => {
 				const target = event.target as HTMLInputElement;
@@ -192,17 +193,33 @@ class TestModal extends Modal {
 					inputs[index - 1].focus();
 				}
 			});
+
 			// 정답 입력 시, next input으로 focus가 이동
+			// 입력값의 정답 유무에 따라 스타일링 변경
 			input.addEventListener("input", (event) => {
 				const target = event.target as HTMLInputElement;
 				const answerChar = target.getAttribute("data-char") || "";
 				const inputChar = target.value;
-				// 입력된 값이 정답이라면
+
+				//입력을 하면 이전 입력으로부터 생성된 정답 유무 클래스 삭제
+				target.removeClasses(["_vld", "_invld"]);
+
+				// 입력값이 정답이라면 _vld 클래스 추가
 				if (inputChar === answerChar) {
+					target.addClass("_vld");
 					if (index < inputs.length - 1) {
+						// focus 이동
 						inputs[index + 1].focus();
 					}
 				}
+				// 입력값이 오답이라면 _invld 클래스 추가
+				else {
+					target.addClass("_invld");
+				}
+
+				// 입력값이 비워졌다면 정답유무 스타일 삭제
+				if (target.value === "")
+					target.removeClasses(["_vld", "_invld"]);
 			});
 		});
 	}
