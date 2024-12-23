@@ -122,18 +122,31 @@ class TestModal extends Modal {
 						.split("")
 						// 글자마다 input 생성
 						.map((char: string) => {
+							// 글자의 종류를 영어,숫자,한국어로 분류
+							let charClass = "";
+							if (/^[a-zA-Z]$/.test(char)) {
+								charClass = "en";
+							} else if (/^[0-9]$/.test(char)) {
+								charClass = "num";
+							} else if (/^[가-힣]$/.test(char)) {
+								charClass = "ko";
+							}
 							// 띄어쓰기는 input이 아닌 span태그로 변환
-							if (char === " ") {
+							else if (char === " ") {
 								return `<span style="display: inline-block; width: 10px;"></span>`;
 							}
+							// 이외 글자는 특수문자로 취급, 그대로 출력
+							else {
+								return char;
+							}
 
-							const id = `ch_${inputCounter}`; // Generate a sequential ID
-							inputCounter++; // Increment the counter for the next input
-							return `<input id="${id}" class="test-input _clr" type="text" maxlength="1" 
+							const id = `ch_${inputCounter}`;
+							inputCounter++;
+							return `<input id="${id}" class="test-input ${charClass} _clr" type="text" maxlength="1" 
 									data-char="${char}"/>`;
 						})
 						.join("")
-				); // Recombine characters
+				);
 			}
 		);
 
@@ -152,8 +165,8 @@ class TestModal extends Modal {
 			this.contentEl.querySelectorAll("input")
 		) as HTMLInputElement[];
 
-		// 이벤트 리스너 추가
 		inputs.forEach((input, index) => {
+			// focus 이동 이벤트 리스너 추가
 			// 좌,우 화살표 입력시 focus 이동
 			input.addEventListener("keydown", (event) => {
 				const target = event.target as HTMLInputElement;
