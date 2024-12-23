@@ -98,6 +98,11 @@ class TestModal extends Modal {
 		this.content = content;
 		this.component = new Component();
 		this.title = title;
+
+		//Modal 스타일링
+		this.modalEl.style.width = "800px";
+		this.modalEl.style.margin = " 0 auto";
+		this.modalEl.style.padding = "0 50px 0 50px";
 	}
 	onOpen() {
 		this.contentEl.createEl("h1", { text: this.title });
