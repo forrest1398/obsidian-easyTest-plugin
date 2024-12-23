@@ -108,6 +108,9 @@ class TestModal extends Modal {
 		this.contentEl.createEl("h1", { text: this.title });
 		this.component.load();
 
+		// input 태그의 순차적 id생성을 위한 변수
+		let inputCounter = 1;
+
 		// content 수정
 		// 볼드체를 각 글자별 <input>으로 변경
 		this.content = this.content.replace(
@@ -124,7 +127,10 @@ class TestModal extends Modal {
 								return `<span style="display: inline-block; width: 10px;"></span>`;
 							}
 
-							return `<input class="test-input" type="text" maxlength="1"/>`;
+							const id = `ch_${inputCounter}`; // Generate a sequential ID
+							inputCounter++; // Increment the counter for the next input
+							return `<input id="${id}" class="test-input _clr" type="text" maxlength="1" 
+									data-char="${char}"/>`;
 						})
 						.join("")
 				); // Recombine characters
@@ -139,6 +145,53 @@ class TestModal extends Modal {
 			"",
 			this.component
 		);
+
+		// 기능 구현을 위한 이벤트 리스너 추가
+		// 생성된 input태그들 지정
+		const inputs = Array.from(
+			this.contentEl.querySelectorAll("input")
+		) as HTMLInputElement[];
+
+		// 이벤트 리스너 추가
+		inputs.forEach((input, index) => {
+			// 좌,우 화살표 입력시 focus 이동
+			input.addEventListener("keydown", (event) => {
+				const target = event.target as HTMLInputElement;
+				if (event.key === "ArrowLeft" && index > 0) {
+					inputs[index - 1].focus();
+				} else if (event.key === "ArrowRight") {
+					if (index < inputs.length - 1) {
+						inputs[index + 1].focus();
+					}
+				}
+			});
+			// 비어있는 input에서 Backspace를 입력 시, previous input으로 focus이동
+			input.addEventListener("keydown", (event) => {
+				const target = event.target as HTMLInputElement;
+				if (
+					event.key === "Backspace" &&
+					target.value === "" &&
+					index > 0
+				) {
+					// Backspace로 이동 시, previous input의 값이 삭제되는걸 방지
+					event.preventDefault();
+					// previous input으로 이동
+					inputs[index - 1].focus();
+				}
+			});
+			// 정답 입력 시, next input으로 focus가 이동
+			input.addEventListener("input", (event) => {
+				const target = event.target as HTMLInputElement;
+				const answerChar = target.getAttribute("data-char") || "";
+				const inputChar = target.value;
+				// 입력된 값이 정답이라면
+				if (inputChar === answerChar) {
+					if (index < inputs.length - 1) {
+						inputs[index + 1].focus();
+					}
+				}
+			});
+		});
 	}
 
 	onClose() {
