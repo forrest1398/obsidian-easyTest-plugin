@@ -142,8 +142,7 @@ class TestModal extends Modal {
 
 							const id = `ch_${inputCounter}`;
 							inputCounter++;
-							return `<input id="${id}" class="test-input ${charClass} " type="text" maxlength="1" 
-									data-char="${char}"/>`;
+							return `<input id="${id}" class="test-input ${charClass} " type="text" maxlength="1" data-char="${char}"/>`;
 						})
 						.join("")
 				);
