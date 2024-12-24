@@ -1,5 +1,5 @@
 {
-	"name": "easy-test-plugin",
+	"name": "easy-test",
 	"version": "1.0.0",
 	"description": "Easily create simple tests",
 	"main": "main.js",
