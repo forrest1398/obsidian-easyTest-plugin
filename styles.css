@@ -6,3 +6,35 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+.test-input {
+	width: 2.25em;
+	text-align: center;
+	border: 1px solid #ccc;
+	margin: 0 0.05em 0.1em 0.05em;
+	font-size: medium;
+}
+.test-input.en {
+	border-color: #b3d7ff;
+}
+
+.test-input.ko {
+	border-color: #ffe0b2;
+}
+.test-input.num {
+	border-color: #afcbe3;
+}
+._vld {
+	border-color: green !important;
+}
+._invld {
+	border-color: red !important;
+}
+
+/* input 태그의 세로 정렬을 위한 설정 (영어, 숫자, 한글 공통) */
+.en,
+.num,
+.ko {
+	line-height: 1.2;
+	font-family: Arial, sans-serif;
+	vertical-align: middle;
+}

@@ -1,11 +1,9 @@
 {
-	"id": "obidian-easyTest-plugin",
-	"name": "Easy Test ",
+	"id": "obidian-easytest-plugin",
+	"name": "Easy Test",
 	"version": "0.0.1",
 	"minAppVersion": "0.15.0",
-	"description": "Make simple test to learn effectively",
+	"description": "Easily create simple tests",
 	"author": "Forrest",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
 	"isDesktopOnly": false
 }
