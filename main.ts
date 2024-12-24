@@ -159,20 +159,22 @@ class TestModal extends Modal {
 			this.component
 		);
 
-		// 기능 구현을 위한 이벤트 리스너 추가
 		// 생성된 input태그들 지정
 		const inputs = Array.from(
 			this.contentEl.querySelectorAll("input")
 		) as HTMLInputElement[];
 
+		// 기능 구현을 위한 이벤트 리스너 추가
 		inputs.forEach((input, index) => {
-			// focus 이동 이벤트 리스너 추가
-			// 좌,우 화살표 입력시 focus 이동
+			// 좌/우 화살표, Enter 입력 시 focus 이동
 			input.addEventListener("keydown", (event) => {
 				const target = event.target as HTMLInputElement;
 				if (event.key === "ArrowLeft" && index > 0) {
 					inputs[index - 1].focus();
-				} else if (event.key === "ArrowRight") {
+				} else if (
+					event.key === "ArrowRight" ||
+					event.key === "Enter"
+				) {
 					if (index < inputs.length - 1) {
 						inputs[index + 1].focus();
 					}
@@ -187,9 +189,9 @@ class TestModal extends Modal {
 					target.value === "" &&
 					index > 0
 				) {
-					// Backspace로 이동 시, previous input의 값이 삭제되는걸 방지
+					// Backspace로 이동 시, 값이 삭제 방지
 					event.preventDefault();
-					// previous input으로 이동
+					// focus이동
 					inputs[index - 1].focus();
 				}
 			});
@@ -201,18 +203,19 @@ class TestModal extends Modal {
 				const answerChar = target.getAttribute("data-char") || "";
 				const inputChar = target.value;
 
-				//입력을 하면 이전 입력으로부터 생성된 정답 유무 클래스 삭제
+				//입력 시, 이전 입력으로부터 생성된 정답 유무 클래스 삭제
 				target.removeClasses(["_vld", "_invld"]);
 
-				// 입력값이 정답이라면 _vld 클래스 추가
+				// 정답 입력 시
 				if (inputChar === answerChar) {
-					target.addClass("_vld");
+					// focus 이동
 					if (index < inputs.length - 1) {
-						// focus 이동
 						inputs[index + 1].focus();
 					}
+					target.addClass("_vld");
 				}
-				// 입력값이 오답이라면 _invld 클래스 추가
+
+				// 오답 입력 시
 				else {
 					target.addClass("_invld");
 				}
