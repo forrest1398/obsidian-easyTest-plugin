@@ -1,7 +1,7 @@
 {
 	"name": "easy-test-plugin",
 	"version": "1.0.0",
-	"description": "Make simple test to learn effectively",
+	"description": "Easily create simple tests",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
