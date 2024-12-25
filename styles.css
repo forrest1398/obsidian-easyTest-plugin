@@ -6,6 +6,11 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+.test-modal {
+	width: 900px;
+	margin: 0 auto;
+	padding: 0 50px 0 50px;
+}
 .test-input {
 	width: 2.25em;
 	text-align: center;
