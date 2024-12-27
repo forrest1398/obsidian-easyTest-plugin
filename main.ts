@@ -37,7 +37,7 @@ export default class EasyTestPlugin extends Plugin {
 		await this.loadSettings();
 		this.addSettingTab(new EasyTestPluginSettingTab(this.app, this));
 
-		// Add ribbonIcon creating test
+		// RibbonIcon 추가
 		const openTestIcon = this.addRibbonIcon(
 			"notebook-pen",
 			"Open Test",
@@ -102,6 +102,7 @@ class TestModal extends Modal {
 		//Modal 스타일링 클래스 추가
 		this.modalEl.addClass("test-modal");
 	}
+
 	onOpen() {
 		this.contentEl.createEl("h1", { text: this.title });
 		this.component.load();
@@ -167,13 +168,13 @@ class TestModal extends Modal {
 			input.addEventListener("keydown", (event) => {
 				const target = event.target as HTMLInputElement;
 				if (event.key === "ArrowLeft" && index > 0) {
-					inputs[index - 1].focus();
+					this.moveFocusFoward(inputs, index);
 				} else if (
 					event.key === "ArrowRight" ||
 					event.key === "Enter"
 				) {
 					if (index < inputs.length - 1) {
-						inputs[index + 1].focus();
+						this.moveFocusBackward(inputs, index);
 					}
 				}
 			});
@@ -189,7 +190,7 @@ class TestModal extends Modal {
 					// Backspace로 이동 시, 값이 삭제 방지
 					event.preventDefault();
 					// focus이동
-					inputs[index - 1].focus();
+					this.moveFocusFoward(inputs, index);
 				}
 			});
 
@@ -207,7 +208,7 @@ class TestModal extends Modal {
 				if (inputChar === answerChar) {
 					// focus 이동
 					if (index < inputs.length - 1) {
-						inputs[index + 1].focus();
+						this.moveFocusBackward(inputs, index);
 					}
 					target.addClass("_vld");
 				}
@@ -222,6 +223,30 @@ class TestModal extends Modal {
 					target.removeClasses(["_vld", "_invld"]);
 			});
 		});
+	}
+	moveFocusFoward(inputs: HTMLInputElement[], index: number) {
+		// 0 이상의 인덱스 중에서
+		while (index > 0) {
+			// 한칸씩 옮겨가며
+			index -= 1;
+			// _vld가 없는 html element를 찾는다.
+			if (!inputs[index].classList.contains("_vld")) {
+				inputs[index].focus();
+				break;
+			}
+		}
+	}
+	moveFocusBackward(inputs: HTMLInputElement[], index: number) {
+		// 배열의 길이 이하의 인덱스 중에서
+		while (index < inputs.length - 1) {
+			// 한칸씩 옮겨가며
+			index += 1;
+			// _vld가 없는 html element를 찾는다.
+			if (!inputs[index].classList.contains("_vld")) {
+				inputs[index].focus();
+				break;
+			}
+		}
 	}
 
 	onClose() {
