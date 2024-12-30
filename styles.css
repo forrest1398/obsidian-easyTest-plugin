@@ -7,8 +7,8 @@ If your plugin does not need CSS, delete this file.
 
 */
 .test-modal {
-	width: 900px;
 	margin: 0 auto;
+	width: 900px;
 	padding: 0 50px 0 50px;
 }
 .test-input {
@@ -18,6 +18,29 @@ If your plugin does not need CSS, delete this file.
 	margin: 0 0.05em 0.1em 0.05em;
 	font-size: medium;
 }
+.hint-button {
+	position: fixed;
+
+	color: #1e90ff;
+	border: 1px solid #87cefa;
+	border-radius: 7px;
+	padding: 8px 16px;
+	font-size: 14px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: background-color 0.3s, color 0.3s, transform 0.2s;
+}
+
+.hint-button:hover {
+	background-color: #87cefa; /* 하늘색 배경 */
+	color: #ffffff; /* 흰색 글자 */
+}
+
+.hint-button:active {
+	background-color: #104e8b; /* 더 어두운 파란색 */
+	transform: scale(0.95); /* 살짝 눌리는 효과 */
+}
+
 .test-input.en {
 	border-color: #b3d7ff;
 }

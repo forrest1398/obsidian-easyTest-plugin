@@ -128,6 +128,35 @@ class TestModal extends Modal {
 	}
 
 	onOpen() {
+		// 힌트 버튼 추가
+		const hintButton = this.modalEl.createEl("button");
+		hintButton.appendText("Hint");
+		hintButton.classList.add("hint-button");
+
+		// container 변화 감지, 힌트 버튼 위치 최신화
+		const updateButtonPosition = () => {
+			const modalRect = this.modalEl.getBoundingClientRect();
+			const containerRect = this.containerEl.getBoundingClientRect();
+			const buttonPositionX =
+				containerRect.width / 2 + modalRect.width / 2 - 75;
+			const buttonPositionY = modalRect.top + 10;
+			hintButton.style.left = `${buttonPositionX}px`;
+			hintButton.style.top = `${buttonPositionY}px`;
+		};
+
+		updateButtonPosition();
+
+		const resizeObserver = new ResizeObserver(() => {
+			updateButtonPosition();
+		});
+		resizeObserver.observe(this.containerEl);
+
+		// 힌트 기능
+		hintButton.addEventListener("click", () => {
+			new Notice("This is your hint!");
+		});
+
+		//------------------------------------------------------------------------
 		this.contentEl.createEl("h1", { text: this.title });
 		this.component.load();
 
