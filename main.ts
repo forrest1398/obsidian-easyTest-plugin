@@ -6,6 +6,8 @@ import {
 	PluginSettingTab,
 	MarkdownRenderer,
 	Component,
+	Editor,
+	MarkdownView,
 } from "obsidian";
 
 interface EasyTestPluginSettings {}
@@ -60,6 +62,28 @@ export default class EasyTestPlugin extends Plugin {
 				new TestModal(this.app, title, markdownContent).open();
 			}
 		);
+
+		// Command 추가
+		this.addCommand({
+			id: "create-test-command",
+			name: "Create test command",
+			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "i" }],
+			editorCallback: (editor: Editor, view: MarkdownView) => {
+				const doc = editor.getDoc?.();
+				if (!doc) {
+					new Notice("The editor does not have a valid document.");
+					return;
+				}
+				const markdownContent = doc.getValue() || "";
+				const title = this.app.workspace.getActiveFile()?.basename;
+
+				const modal = new TestModal(
+					this.app,
+					title,
+					markdownContent
+				).open();
+			},
+		});
 
 		//------------------------------------ 아직 학습하지 못한 코드 ---------------------------------------------
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
