@@ -84,18 +84,6 @@ export default class EasyTestPlugin extends Plugin {
 				).open();
 			},
 		});
-
-		//------------------------------------ 아직 학습하지 못한 코드 ---------------------------------------------
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
-			console.log("click", evt);
-		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(
-			window.setInterval(() => console.log("setInterval"), 5 * 60 * 1000)
-		);
 	}
 
 	onunload() {}
@@ -116,12 +104,14 @@ class TestModal extends Modal {
 	component: Component;
 	content: string;
 	title: string;
+	activatedInputIndex: number;
 
 	constructor(app: App, title: any, content: any) {
 		super(app);
 		this.content = content;
 		this.component = new Component();
 		this.title = title;
+		this.activatedInputIndex = 0;
 
 		//Modal 스타일링 클래스 추가
 		this.modalEl.addClass("test-modal");
@@ -188,6 +178,13 @@ class TestModal extends Modal {
 
 		// 기능 구현을 위한 이벤트 리스너 추가
 		inputs.forEach((input, index) => {
+			// focus 이동 시, 이동 전 input의 hint-target 클래스 제거 + activatedInputIndex 업데이트
+			input.addEventListener("focus", () => {
+				const activatedInput = inputs[this.activatedInputIndex];
+				activatedInput.removeClass("hint-target");
+				this.activatedInputIndex = index;
+			});
+
 			// 좌/우 화살표, Enter 입력 시 focus 이동
 			input.addEventListener("keydown", (event) => {
 				const target = event.target as HTMLInputElement;
@@ -226,7 +223,7 @@ class TestModal extends Modal {
 				const inputChar = target.value;
 
 				//입력 시, 이전 입력으로부터 생성된 정답 유무 클래스 삭제
-				target.removeClasses(["_vld", "_invld"]);
+				target.removeClasses(["_vld", "_invld", "_hint-used"]);
 
 				// 정답 입력 시
 				if (inputChar === answerChar) {
@@ -244,11 +241,68 @@ class TestModal extends Modal {
 
 				// 입력값이 비워졌다면 정답유무 스타일 삭제
 				if (target.value === "")
-					target.removeClasses(["_vld", "_invld"]);
+					target.removeClasses(["_vld", "_invld", "_hint-used"]);
 			});
+		});
+
+		// 힌트 버튼 추가
+		const hintButton = this.modalEl.createEl("button");
+		hintButton.appendText("Hint");
+		hintButton.classList.add("hint-button");
+
+		// container 변화 감지, 힌트 버튼 위치 최신화
+		const updateButtonPosition = () => {
+			const modalRect = this.modalEl.getBoundingClientRect();
+			const containerRect = this.containerEl.getBoundingClientRect();
+			const buttonPositionX =
+				containerRect.width / 2 + modalRect.width / 2 - 75;
+			const buttonPositionY = modalRect.top + 10;
+			hintButton.style.left = `${buttonPositionX}px`;
+			hintButton.style.top = `${buttonPositionY}px`;
+		};
+
+		updateButtonPosition();
+
+		const resizeObserver = new ResizeObserver(() => {
+			updateButtonPosition();
+		});
+		resizeObserver.observe(this.containerEl);
+
+		// hint 버튼 대상 표시 기능
+		hintButton.addEventListener("mouseover", () => {
+			const activatedInput = inputs[this.activatedInputIndex];
+			activatedInput.addClass("hint-target");
+		});
+
+		hintButton.addEventListener("mouseout", () => {
+			const activatedInput = inputs[this.activatedInputIndex];
+			activatedInput.removeClass("hint-target");
+		});
+
+		// hint 버튼 정답 입력 기능
+		hintButton.addEventListener("click", () => {
+			let activatedInput = inputs[this.activatedInputIndex];
+
+			// 정답 입력 및 스타일 적용
+			const charValue = activatedInput.getAttribute("data-char");
+			if (charValue !== null) {
+				activatedInput.value = charValue;
+			} else {
+				activatedInput.value = "";
+			}
+
+			activatedInput.addClass("_hint-used");
+
+			// 정답 입력 후 이동된 input에게도 hint 스타일 적용
+			this.moveFocusBackward(inputs, this.activatedInputIndex);
+			activatedInput = inputs[this.activatedInputIndex];
+			activatedInput.addClass("hint-target");
 		});
 	}
 	moveFocusFoward(inputs: HTMLInputElement[], index: number) {
+		const activatedInput = inputs[index];
+		activatedInput.removeClass("hint-target");
+
 		// 0 이상의 인덱스 중에서
 		while (index > 0) {
 			// 한칸씩 옮겨가며
@@ -261,6 +315,9 @@ class TestModal extends Modal {
 		}
 	}
 	moveFocusBackward(inputs: HTMLInputElement[], index: number) {
+		const activatedInput = inputs[index];
+		activatedInput.removeClass("hint-target");
+
 		// 배열의 길이 이하의 인덱스 중에서
 		while (index < inputs.length - 1) {
 			// 한칸씩 옮겨가며
