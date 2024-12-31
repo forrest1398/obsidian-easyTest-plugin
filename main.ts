@@ -223,7 +223,7 @@ class TestModal extends Modal {
 				const inputChar = target.value;
 
 				//입력 시, 이전 입력으로부터 생성된 정답 유무 클래스 삭제
-				target.removeClasses(["_vld", "_invld"]);
+				target.removeClasses(["_vld", "_invld", "_hint-used"]);
 
 				// 정답 입력 시
 				if (inputChar === answerChar) {
@@ -241,7 +241,7 @@ class TestModal extends Modal {
 
 				// 입력값이 비워졌다면 정답유무 스타일 삭제
 				if (target.value === "")
-					target.removeClasses(["_vld", "_invld"]);
+					target.removeClasses(["_vld", "_invld", "_hint-used"]);
 			});
 		});
 
@@ -291,7 +291,7 @@ class TestModal extends Modal {
 				activatedInput.value = "";
 			}
 
-			activatedInput.addClass("_vld");
+			activatedInput.addClass("_hint-used");
 
 			// 정답 입력 후 이동된 input에게도 hint 스타일 적용
 			this.moveFocusBackward(inputs, this.activatedInputIndex);
@@ -302,6 +302,7 @@ class TestModal extends Modal {
 	moveFocusFoward(inputs: HTMLInputElement[], index: number) {
 		const activatedInput = inputs[index];
 		activatedInput.removeClass("hint-target");
+
 		// 0 이상의 인덱스 중에서
 		while (index > 0) {
 			// 한칸씩 옮겨가며
@@ -316,6 +317,7 @@ class TestModal extends Modal {
 	moveFocusBackward(inputs: HTMLInputElement[], index: number) {
 		const activatedInput = inputs[index];
 		activatedInput.removeClass("hint-target");
+
 		// 배열의 길이 이하의 인덱스 중에서
 		while (index < inputs.length - 1) {
 			// 한칸씩 옮겨가며

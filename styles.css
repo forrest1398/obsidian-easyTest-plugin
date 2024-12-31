@@ -91,6 +91,12 @@
 	border-width: 1.5px !important; /* 테두리 두께를 더 두껍게 */
 	box-sizing: border-box; /* 테두리가 밖으로 확장되도록 설정 */
 }
+._hint-used {
+	border-color: #f49836 !important; /* 더 밝은 붉은색으로 오답 표시 */
+	background-color: rgba(244, 146, 54, 0.2) !important; /* 밝은 붉은색 배경 */
+	border-width: 1.5px !important; /* 테두리 두께를 더 두껍게 */
+	box-sizing: border-box; /* 테두리가 밖으로 확장되도록 설정 */
+}
 
 /* input 태그의 세로 정렬을 위한 설정 (영어, 숫자, 한글 공통) */
 .en,
