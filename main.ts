@@ -116,47 +116,20 @@ class TestModal extends Modal {
 	component: Component;
 	content: string;
 	title: string;
+	activatedInputIndex: number;
 
 	constructor(app: App, title: any, content: any) {
 		super(app);
 		this.content = content;
 		this.component = new Component();
 		this.title = title;
+		this.activatedInputIndex = 0;
 
 		//Modal 스타일링 클래스 추가
 		this.modalEl.addClass("test-modal");
 	}
 
 	onOpen() {
-		// 힌트 버튼 추가
-		const hintButton = this.modalEl.createEl("button");
-		hintButton.appendText("Hint");
-		hintButton.classList.add("hint-button");
-
-		// container 변화 감지, 힌트 버튼 위치 최신화
-		const updateButtonPosition = () => {
-			const modalRect = this.modalEl.getBoundingClientRect();
-			const containerRect = this.containerEl.getBoundingClientRect();
-			const buttonPositionX =
-				containerRect.width / 2 + modalRect.width / 2 - 75;
-			const buttonPositionY = modalRect.top + 10;
-			hintButton.style.left = `${buttonPositionX}px`;
-			hintButton.style.top = `${buttonPositionY}px`;
-		};
-
-		updateButtonPosition();
-
-		const resizeObserver = new ResizeObserver(() => {
-			updateButtonPosition();
-		});
-		resizeObserver.observe(this.containerEl);
-
-		// 힌트 기능
-		hintButton.addEventListener("click", () => {
-			new Notice("This is your hint!");
-		});
-
-		//------------------------------------------------------------------------
 		this.contentEl.createEl("h1", { text: this.title });
 		this.component.load();
 
@@ -217,6 +190,13 @@ class TestModal extends Modal {
 
 		// 기능 구현을 위한 이벤트 리스너 추가
 		inputs.forEach((input, index) => {
+			// focus 이동 시, 이동 전 input의 hint-target 클래스 제거 + activatedInputIndex 업데이트
+			input.addEventListener("focus", () => {
+				const activatedInput = inputs[this.activatedInputIndex];
+				activatedInput.removeClass("hint-target");
+				this.activatedInputIndex = index;
+			});
+
 			// 좌/우 화살표, Enter 입력 시 focus 이동
 			input.addEventListener("keydown", (event) => {
 				const target = event.target as HTMLInputElement;
@@ -276,8 +256,53 @@ class TestModal extends Modal {
 					target.removeClasses(["_vld", "_invld"]);
 			});
 		});
+
+		// 힌트 버튼 추가
+		const hintButton = this.modalEl.createEl("button");
+		hintButton.appendText("Hint");
+		hintButton.classList.add("hint-button");
+
+		// container 변화 감지, 힌트 버튼 위치 최신화
+		const updateButtonPosition = () => {
+			const modalRect = this.modalEl.getBoundingClientRect();
+			const containerRect = this.containerEl.getBoundingClientRect();
+			const buttonPositionX =
+				containerRect.width / 2 + modalRect.width / 2 - 75;
+			const buttonPositionY = modalRect.top + 10;
+			hintButton.style.left = `${buttonPositionX}px`;
+			hintButton.style.top = `${buttonPositionY}px`;
+		};
+
+		updateButtonPosition();
+
+		const resizeObserver = new ResizeObserver(() => {
+			updateButtonPosition();
+		});
+		resizeObserver.observe(this.containerEl);
+
+		// hint 대상 표시 기능
+		hintButton.addEventListener("mouseover", () => {
+			const activatedInput = inputs[this.activatedInputIndex];
+			activatedInput.addClass("hint-target");
+		});
+
+		hintButton.addEventListener("mouseout", () => {
+			const activatedInput = inputs[this.activatedInputIndex];
+			activatedInput.removeClass("hint-target");
+		});
+
+		// hint 기능
+		hintButton.addEventListener("click", () => {
+			let activatedInput = inputs[this.activatedInputIndex];
+			activatedInput.addClass("_vld");
+			this.moveFocusBackward(inputs, this.activatedInputIndex);
+			activatedInput = inputs[this.activatedInputIndex];
+			activatedInput.addClass("hint-target");
+		});
 	}
 	moveFocusFoward(inputs: HTMLInputElement[], index: number) {
+		const activatedInput = inputs[index];
+		activatedInput.removeClass("hint-target");
 		// 0 이상의 인덱스 중에서
 		while (index > 0) {
 			// 한칸씩 옮겨가며
@@ -290,6 +315,8 @@ class TestModal extends Modal {
 		}
 	}
 	moveFocusBackward(inputs: HTMLInputElement[], index: number) {
+		const activatedInput = inputs[index];
+		activatedInput.removeClass("hint-target");
 		// 배열의 길이 이하의 인덱스 중에서
 		while (index < inputs.length - 1) {
 			// 한칸씩 옮겨가며

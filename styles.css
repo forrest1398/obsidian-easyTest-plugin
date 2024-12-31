@@ -1,28 +1,24 @@
-/*
-
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
-
-If your plugin does not need CSS, delete this file.
-
-*/
 .test-modal {
 	margin: 0 auto;
 	width: 900px;
 	padding: 0 50px 0 50px;
 }
+
 .test-input {
 	width: 2.25em;
 	text-align: center;
-	border: 1px solid #ccc;
+	border: 1px solid #dcedc8; /* 더 두꺼운 초록색 테두리 */
+	background-color: rgba(220, 240, 212, 0.3); /* 연한 초록색 배경 */
 	margin: 0 0.05em 0.1em 0.05em;
 	font-size: medium;
+	box-sizing: border-box; /* 테두리가 밖으로 확장되도록 설정 */
 }
+
 .hint-button {
 	position: fixed;
-
-	color: #1e90ff;
-	border: 1px solid #87cefa;
+	color: #ffffff;
+	background-color: #81c784; /* 밝은 숲의 초록색 */
+	border: 1px solid #a5d6a7; /* 더 밝은 숲의 초록색 */
 	border-radius: 7px;
 	padding: 8px 16px;
 	font-size: 14px;
@@ -32,30 +28,68 @@ If your plugin does not need CSS, delete this file.
 }
 
 .hint-button:hover {
-	background-color: #87cefa; /* 하늘색 배경 */
-	color: #ffffff; /* 흰색 글자 */
+	background-color: #a5d6a7; /* 밝은 숲의 초록색 */
+	color: #ffffff;
 }
 
 .hint-button:active {
-	background-color: #104e8b; /* 더 어두운 파란색 */
-	transform: scale(0.95); /* 살짝 눌리는 효과 */
+	background-color: #388e3c; /* 숲의 짙은 초록색 */
+	transform: scale(0.95); /* 눌리는 효과 */
 }
 
-.test-input.en {
-	border-color: #b3d7ff;
+.hint-target {
+	border: 2px dashed #a5d6a7 !important; /* 밝은 숲의 초록색 점선 */
+	background-color: rgba(165, 214, 167, 0.2); /* 부드러운 초록색 배경 */
+	box-shadow: 0 0 10px 3px #a5d6a7; /* 발광 효과 */
+	animation: pulse 1.5s infinite;
+	border-radius: 4px;
+}
+
+/* 애니메이션 효과 */
+@keyframes pulse {
+	0% {
+		box-shadow: 0 0 10px 3px #a5d6a7;
+	}
+	50% {
+		box-shadow: 0 0 15px 5px #a5d6a7;
+	}
+	100% {
+		box-shadow: 0 0 10px 3px #a5d6a7;
+	}
+}
+
+.test-input.num {
+	border-color: #e0e0e0; /* 밝은 회색 */
+	background-color: rgba(224, 224, 224, 0.3); /* 밝은 회색 배경 */
 }
 
 .test-input.ko {
-	border-color: #ffe0b2;
+	border-color: #f4e1c1; /* 밝은 따뜻한 베이지 색 */
+	background-color: rgba(244, 225, 193, 0.3); /* 부드러운 갈색 배경 */
 }
-.test-input.num {
-	border-color: #afcbe3;
+
+.test-input.en {
+	border-color: #b3e5fc; /* 밝고 연한 파란색 */
+	background-color: rgba(179, 229, 252, 0.3); /* 부드러운 밝은 파란색 배경 */
 }
+
 ._vld {
-	border-color: green !important;
+	border-color: #99cc82 !important; /* 밝은 숲의 초록색으로 정답 표시 (더 밝고 연한 색) */
+	background-color: rgba(
+		153,
+		204,
+		130,
+		0.2
+	) !important; /* 더 연한 초록색 배경 */
+	border-width: 1.5px !important; /* 테두리 두께를 더 두껍게 */
+	box-sizing: border-box; /* 테두리가 밖으로 확장되도록 설정 */
 }
+
 ._invld {
-	border-color: red !important;
+	border-color: #f44336 !important; /* 더 밝은 붉은색으로 오답 표시 */
+	background-color: rgba(244, 67, 54, 0.2) !important; /* 밝은 붉은색 배경 */
+	border-width: 1.5px !important; /* 테두리 두께를 더 두껍게 */
+	box-sizing: border-box; /* 테두리가 밖으로 확장되도록 설정 */
 }
 
 /* input 태그의 세로 정렬을 위한 설정 (영어, 숫자, 한글 공통) */
