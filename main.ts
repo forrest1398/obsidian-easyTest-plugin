@@ -84,18 +84,6 @@ export default class EasyTestPlugin extends Plugin {
 				).open();
 			},
 		});
-
-		//------------------------------------ 아직 학습하지 못한 코드 ---------------------------------------------
-		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
-		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
-			console.log("click", evt);
-		});
-
-		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(
-			window.setInterval(() => console.log("setInterval"), 5 * 60 * 1000)
-		);
 	}
 
 	onunload() {}
@@ -280,7 +268,7 @@ class TestModal extends Modal {
 		});
 		resizeObserver.observe(this.containerEl);
 
-		// hint 대상 표시 기능
+		// hint 버튼 대상 표시 기능
 		hintButton.addEventListener("mouseover", () => {
 			const activatedInput = inputs[this.activatedInputIndex];
 			activatedInput.addClass("hint-target");
@@ -291,10 +279,21 @@ class TestModal extends Modal {
 			activatedInput.removeClass("hint-target");
 		});
 
-		// hint 기능
+		// hint 버튼 정답 입력 기능
 		hintButton.addEventListener("click", () => {
 			let activatedInput = inputs[this.activatedInputIndex];
+
+			// 정답 입력 및 스타일 적용
+			const charValue = activatedInput.getAttribute("data-char");
+			if (charValue !== null) {
+				activatedInput.value = charValue;
+			} else {
+				activatedInput.value = "";
+			}
+
 			activatedInput.addClass("_vld");
+
+			// 정답 입력 후 이동된 input에게도 hint 스타일 적용
 			this.moveFocusBackward(inputs, this.activatedInputIndex);
 			activatedInput = inputs[this.activatedInputIndex];
 			activatedInput.addClass("hint-target");
