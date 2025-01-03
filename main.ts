@@ -173,7 +173,7 @@ class TestModal extends Modal {
 
 		// 생성된 input태그들 지정
 		const inputs = Array.from(
-			this.contentEl.querySelectorAll("input")
+			this.contentEl.querySelectorAll("input.test-input")
 		) as HTMLInputElement[];
 
 		// 기능 구현을 위한 이벤트 리스너 추가
