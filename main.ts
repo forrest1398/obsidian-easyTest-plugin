@@ -14,30 +14,11 @@ interface EasyTestPluginSettings {}
 
 const DEFAULT_SETTINGS: EasyTestPluginSettings = {};
 
-class EasyTestPluginSettingTab extends PluginSettingTab {
-	plugin: EasyTestPlugin;
-
-	constructor(app: App, plugin: EasyTestPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const { containerEl } = this;
-		containerEl.empty();
-
-		containerEl.createEl("h1", {
-			text: "There is nothing to set . . . yet",
-		});
-	}
-}
-
 export default class EasyTestPlugin extends Plugin {
 	settings: EasyTestPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
-		this.addSettingTab(new EasyTestPluginSettingTab(this.app, this));
 
 		// RibbonIcon 추가
 		const openTestIcon = this.addRibbonIcon(
@@ -67,7 +48,6 @@ export default class EasyTestPlugin extends Plugin {
 		this.addCommand({
 			id: "create-test-command",
 			name: "Create test command",
-			hotkeys: [{ modifiers: ["Mod", "Shift"], key: "i" }],
 			editorCallback: (editor: Editor, view: MarkdownView) => {
 				const doc = editor.getDoc?.();
 				if (!doc) {
