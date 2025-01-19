@@ -23,7 +23,7 @@ export default class EasyTestPlugin extends Plugin {
 		// RibbonIcon 추가
 		const openTestIcon = this.addRibbonIcon(
 			"notebook-pen",
-			"Open Test",
+			"Open test",
 			(evt: MouseEvent) => {
 				const editor = this.app.workspace.activeEditor?.editor;
 				if (!editor) {
