@@ -1,14 +1,17 @@
-# Obsidian Plugin : Easy Test
+# Easy Test 
 
-## Description
+### Description
+This plugin was created to help users make better use of their carefully written notes, **prevent them from being neglected**, and ultimately support users learning.
 
-This Obsidian plugin is designed to make learning more efficient and interactive.
-By focusing on bold text within a note, the plugin allows users to transform key parts of their content into a dynamic quiz format.
-This helps users test their understanding and reinforce knowledge directly within their notes.
+## Features
+### Core
+-   The plugin extracts bold text (**bold**) from the active editor and converts it into HTML input fields.
+-   Displays the converted content in a modal for **easy interaction** ( click the ribbion button or use hotkey ).
+-   Then user can enter their answers and check them in real time.
+![Core](resources/screenshots/Core_Feature.gif)
 
-## Features:
+### Hint
+- Users can also check the answer of the **focused input field** by clicking the Hint button located in the upper right corner
+![Hint](resources/screenshots/Hint.gif)
 
--   Extracts bold text (**bold**) from the active editor and converts it into HTML input fields.
--   Displays the converted content in a modal for easy interaction.
--   Allows users to input answers and provides real-time validation.
-    -   Correct answers are highlighted in green, and incorrect answers in red.
+
