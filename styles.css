@@ -73,6 +73,11 @@
 	background-color: rgba(179, 229, 252, 0.3); /* 부드러운 밝은 파란색 배경 */
 }
 
+.test-input.jp {
+	border-color: #ccaaff; /* 밝은 보라색 */
+	background-color: rgba(242, 222, 251, 0.3); /* 밝고 연한 보라색 배경 */
+}
+
 ._vld {
 	border-color: #99cc82 !important; /* 밝은 숲의 초록색으로 정답 표시 (더 밝고 연한 색) */
 	background-color: rgba(
@@ -101,7 +106,8 @@
 /* input 태그의 세로 정렬을 위한 설정 (영어, 숫자, 한글 공통) */
 .en,
 .num,
-.ko {
+.ko,
+.jp {
 	line-height: 1.2;
 	font-family: Arial, sans-serif;
 	vertical-align: middle;

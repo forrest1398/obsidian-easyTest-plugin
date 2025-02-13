@@ -43,6 +43,8 @@ export class TestModal extends Modal {
 								charClass = "num";
 							} else if (/^[가-힣]$/.test(char)) {
 								charClass = "ko";
+							} else if (/^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]$/u.test(char)) {
+								charClass = "jp";
 							}
 							// 띄어쓰기는 input이 아닌 span태그로 변환
 							else if (char === " ") {
