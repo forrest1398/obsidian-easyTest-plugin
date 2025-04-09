@@ -7,9 +7,8 @@ This plugin was created to help users easily apply **retrieval practice** right 
 **The purpose of this plugin is to make self-testing extremely quick and easy.**  
 Because it’s so simple, users are more likely to give it a try, repeat it, and feel less stressed when learning — which ultimately supports their learning.
 
-It also helps **prevent notes from gathering dust or being forgotten**.
 
-## Learning with Plugins
+## Learning with Easy Test
 
 1. Quickly go through books or materials, underlining key points.
 2. Based on underlined key points, create a short Obsidian note.
@@ -17,7 +16,7 @@ It also helps **prevent notes from gathering dust or being forgotten**.
 4. **Test again the next morning.**
 
 To get the benefits of this plugin, it’s best to test yourself often.
-That’s why I highly recommend step 4
+That’s why I highly recommend **step 4**
 
 
 ## Features
