@@ -60,7 +60,7 @@ export class TestModal extends Modal {
 								borderColor = this.settings.numColor;
 								backgroundColor =
 									this.settings.numBackgroundColor;
-							} else if (/^[가-힣]$/.test(char)) {
+							} else if (/^[ㄱ-힣]$/.test(char)) {
 								charClass = "ko";
 								borderColor = this.settings.koColor;
 								backgroundColor =
