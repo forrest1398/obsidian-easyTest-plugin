@@ -1,4 +1,8 @@
-import { DEFAULT_SETTINGS, EasyTestSettings } from "./settings";
+import {
+	EasyTestSettingTab,
+	EasyTestSettings,
+	DEFAULT_SETTINGS,
+} from "./settings";
 import { Notice, Plugin, Editor, MarkdownView } from "obsidian";
 import { TestModal } from "./testModal";
 
@@ -28,7 +32,12 @@ export default class EasyTestPlugin extends Plugin {
 				const markdownContent = doc.getValue() || "";
 				const title = this.app.workspace.getActiveFile()?.basename;
 
-				new TestModal(this.app, title, markdownContent).open();
+				new TestModal(
+					this.app,
+					title,
+					markdownContent,
+					this.settings
+				).open();
 			}
 		);
 
@@ -48,14 +57,17 @@ export default class EasyTestPlugin extends Plugin {
 				const modal = new TestModal(
 					this.app,
 					title,
-					markdownContent
+					markdownContent,
+					this.settings
 				).open();
 			},
 		});
+
+		// Setting 추가
+		this.addSettingTab(new EasyTestSettingTab(this.app, this));
 	}
 
-	onunload() {}
-
+	// Setting 함수들
 	async loadSettings() {
 		this.settings = Object.assign(
 			{},
@@ -63,6 +75,7 @@ export default class EasyTestPlugin extends Plugin {
 			await this.loadData()
 		);
 	}
+
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}

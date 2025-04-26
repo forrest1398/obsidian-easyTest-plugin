@@ -1,17 +1,25 @@
 import { App, Modal, MarkdownRenderer, Component } from "obsidian";
+import { EasyTestSettings } from "./settings";
 
 export class TestModal extends Modal {
 	component: Component;
 	content: string;
 	title: string;
 	activatedInputIndex: number;
+	settings: EasyTestSettings;
 
-	constructor(app: App, title: any, content: any) {
+	constructor(
+		app: App,
+		title: any,
+		content: any,
+		settings: EasyTestSettings
+	) {
 		super(app);
 		this.content = content;
 		this.component = new Component();
 		this.title = title;
 		this.activatedInputIndex = 0;
+		this.settings = settings;
 
 		//Modal 스타일링 클래스 추가
 		this.modalEl.addClass("test-modal");
@@ -37,15 +45,37 @@ export class TestModal extends Modal {
 						.map((char: string) => {
 							// 글자의 종류를 영어,숫자,한국어로 분류
 							let charClass = "";
+
+							// 종류별 input 색상
+							let borderColor = "";
+							let backgroundColor = "";
+
 							if (/^[a-zA-Z]$/.test(char)) {
 								charClass = "en";
+								borderColor = this.settings.enColor;
+								backgroundColor =
+									this.settings.enBackgroundColor;
 							} else if (/^[0-9]$/.test(char)) {
 								charClass = "num";
+								borderColor = this.settings.numColor;
+								backgroundColor =
+									this.settings.numBackgroundColor;
 							} else if (/^[가-힣]$/.test(char)) {
 								charClass = "ko";
-							} else if (/^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]$/u.test(char)) {
-								charClass = "jp";
+								borderColor = this.settings.koColor;
+								backgroundColor =
+									this.settings.koBackgroundColor;
+							} else if (
+								/^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]$/u.test(
+									char
+								)
+							) {
+								charClass = "ja";
+								borderColor = this.settings.jaColor;
+								backgroundColor =
+									this.settings.jaBackgroundColor;
 							}
+
 							// 띄어쓰기는 input이 아닌 span태그로 변환
 							else if (char === " ") {
 								return `<span style="display: inline-block; width: 10px;"></span>`;
@@ -54,10 +84,17 @@ export class TestModal extends Modal {
 							else {
 								return char;
 							}
+							console.log(borderColor);
+							console.log(backgroundColor);
 
 							const id = `ch_${inputCounter}`;
 							inputCounter++;
-							return `<input id="${id}" class="test-input ${charClass} " type="text" maxlength="1" data-char="${char}"/>`;
+							return `<input 
+							id="${id}" 
+							class="test-input ${charClass} " 
+							style="border-color:${borderColor}; background-color:${backgroundColor}" 
+							data-char="${char}"
+							type="text" maxlength="1"/>`;
 						})
 						.join("")
 				);
@@ -78,7 +115,7 @@ export class TestModal extends Modal {
 			this.contentEl.querySelectorAll("input.test-input")
 		) as HTMLInputElement[];
 
-		// 기능 구현을 위한 이벤트 리스너 추가
+		// input에 이벤트 리스너 추가
 		inputs.forEach((input, index) => {
 			// focus 이동 시, 이동 전 input의 hint-target 클래스 제거 + activatedInputIndex 업데이트
 			input.addEventListener("focus", () => {
@@ -152,7 +189,7 @@ export class TestModal extends Modal {
 		hintButton.appendText("Hint");
 		hintButton.classList.add("hint-button");
 
-		// container 변화 감지, 힌트 버튼 위치 최신화
+		// 힌트 버튼 반응형 위치 구현
 		const updateButtonPosition = () => {
 			const modalRect = this.modalEl.getBoundingClientRect();
 			const containerRect = this.containerEl.getBoundingClientRect();
@@ -201,6 +238,7 @@ export class TestModal extends Modal {
 			activatedInput.addClass("hint-target");
 		});
 	}
+
 	moveFocusFoward(inputs: HTMLInputElement[], index: number) {
 		const activatedInput = inputs[index];
 		activatedInput.removeClass("hint-target");
@@ -216,6 +254,7 @@ export class TestModal extends Modal {
 			}
 		}
 	}
+
 	moveFocusBackward(inputs: HTMLInputElement[], index: number) {
 		const activatedInput = inputs[index];
 		activatedInput.removeClass("hint-target");
@@ -231,7 +270,6 @@ export class TestModal extends Modal {
 			}
 		}
 	}
-
 	onClose() {
 		this.component.unload();
 	}
