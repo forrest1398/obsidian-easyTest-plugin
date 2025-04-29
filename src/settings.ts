@@ -1,25 +1,35 @@
 import EasyTestPlugin from "./main";
 import { App, PluginSettingTab, Setting } from "obsidian";
+
 export interface EasyTestSettings {
-	koColor: string;
-	koBackgroundColor: string;
-	enColor: string;
-	enBackgroundColor: string;
-	jaColor: string;
-	jaBackgroundColor: string;
-	numColor: string;
-	numBackgroundColor: string;
+	[lang: string]: {
+		title: string;
+		borderColor: string;
+		backgroundColor: string;
+	};
 }
 
-export const DEFAULT_SETTINGS: Partial<EasyTestSettings> = {
-	koColor: "#f4e1c1",
-	koBackgroundColor: "rgba(244, 225, 193, 0.3)",
-	enColor: "#b3e5fc",
-	enBackgroundColor: "rgba(179, 229, 252, 0.3)",
-	jaColor: "#ccaaff",
-	jaBackgroundColor: "rgba(242, 222, 251, 0.3)",
-	numColor: "#e0e0e0",
-	numBackgroundColor: "rgba(224, 224, 224, 0.3)",
+export const DEFAULT_SETTINGS: EasyTestSettings = {
+	ko: {
+		title: "Korean",
+		borderColor: "#f4e1c1",
+		backgroundColor: "rgba(244, 225, 193, 0.3)",
+	},
+	en: {
+		title: "English",
+		borderColor: "#b3e5fc",
+		backgroundColor: "rgba(179, 229, 252, 0.3)",
+	},
+	ja: {
+		title: "Japanese",
+		borderColor: "#ccaaff",
+		backgroundColor: "rgba(242, 222, 251, 0.3)",
+	},
+	num: {
+		title: "Number",
+		borderColor: "#e0e0e0",
+		backgroundColor: "rgba(224, 224, 224, 0.3)",
+	},
 };
 
 export class EasyTestSettingTab extends PluginSettingTab {
@@ -31,36 +41,56 @@ export class EasyTestSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		let { containerEl } = this;
+		const { containerEl } = this;
 
 		containerEl.empty();
-		containerEl.createEl("h1", { text: "Color Settings" });
+		containerEl.createEl("h1", { text: "Input Box Color Settings" });
 
-		containerEl.createDiv();
+		// 언어별 프리뷰 맵 생성
+		const previewMap = new Map<string, HTMLInputElement>();
 
-		new Setting(containerEl)
-			.setName("Number Input Border Color")
-			.addText((text) =>
-				text
-					.setPlaceholder("#ffffff")
-					.setValue(this.plugin.settings.numColor)
-					.onChange(async (value) => {
-						this.plugin.settings.numColor = value;
-						await this.plugin.saveSettings();
-					})
-			);
+		// input 프리뷰 생성 함수
+		const createPreview = (lang: string) => {
+			const preview = document.createElement("input");
+			preview.type = "text";
+			preview.addClass("test-input");
+			preview.style.borderColor = this.plugin.settings[lang].borderColor;
+			preview.style.backgroundColor =
+				this.plugin.settings[lang].backgroundColor;
+			return preview;
+		};
 
-		// Korean background color
-		new Setting(containerEl)
-			.setName("Number Input Background Color")
-			.addText((text) =>
-				text
-					.setPlaceholder("rgba(244, 225, 193, 0.3)")
-					.setValue(this.plugin.settings.numBackgroundColor)
-					.onChange(async (value) => {
-						this.plugin.settings.numBackgroundColor = value;
-						await this.plugin.saveSettings();
-					})
-			);
+		// 언어별 설정 생성
+		for (const lang in this.plugin.settings) {
+			const langSetting = this.plugin.settings[lang];
+			const preview = createPreview(lang);
+			previewMap.set(lang, preview);
+
+			// 설정 폼 추가
+			new Setting(containerEl)
+				.setName(`${langSetting.title}`)
+				.addText((text) => {
+					text.setPlaceholder("Border")
+						.setValue(langSetting.borderColor)
+						.onChange(async (value) => {
+							this.plugin.settings[lang].borderColor = value;
+							await this.plugin.saveSettings();
+							previewMap.get(lang)!.style.borderColor = value;
+						});
+				})
+				.addText((text) => {
+					text.setPlaceholder("Background")
+						.setValue(langSetting.backgroundColor)
+						.onChange(async (value) => {
+							this.plugin.settings[lang].backgroundColor = value;
+							await this.plugin.saveSettings();
+
+							previewMap.get(lang)!.style.backgroundColor = value;
+						});
+				})
+				.settingEl.createDiv({ cls: "preview-wrapper" }, (div) => {
+					div.appendChild(preview);
+				});
+		}
 	}
 }

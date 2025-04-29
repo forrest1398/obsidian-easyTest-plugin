@@ -92,3 +92,7 @@
 	font-family: Arial, sans-serif;
 	vertical-align: middle;
 }
+
+.preview-wrapper {
+	margin-left: 10px;
+}

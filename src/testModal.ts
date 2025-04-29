@@ -25,11 +25,43 @@ export class TestModal extends Modal {
 		this.modalEl.addClass("test-modal");
 	}
 
+	// 언어별 스타일 반환 함수
+	getCharStyles(char: string) {
+		const langMap = [
+			{ regex: /^[a-zA-Z]$/, lang: "en" },
+			{ regex: /^[0-9]$/, lang: "num" },
+			{ regex: /^[ㄱ-힣]$/, lang: "ko" },
+			{
+				regex: /^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]$/u,
+				lang: "ja",
+			},
+		];
+
+		for (const { regex, lang } of langMap) {
+			// 언어 확인
+			if (regex.test(char)) {
+				// 스타일 반환
+				return {
+					charClass: lang,
+					borderColor: this.settings[lang].borderColor,
+					backgroundColor: this.settings[lang].backgroundColor,
+				};
+			}
+		}
+
+		// 등록되지 않은 언어는 null로 반환
+		return {
+			charClass: "Unsupported language",
+			borderColor: "",
+			backgroundColor: "",
+		};
+	}
+
 	onOpen() {
 		this.contentEl.createEl("h1", { text: this.title });
 		this.component.load();
 
-		// input 태그의 순차적 id생성을 위한 변수
+		// input 태그의 순차적 id 생성을 위한 변수
 		let inputCounter = 1;
 
 		// content 수정
@@ -37,67 +69,36 @@ export class TestModal extends Modal {
 		this.content = this.content.replace(
 			/\*\*(.*?)\*\*/g,
 			(match: string, group: string) => {
-				return (
-					group
-						// 글자 단위로 split
-						.split("")
-						// 글자마다 input 생성
-						.map((char: string) => {
-							// 글자의 종류를 영어,숫자,한국어로 분류
-							let charClass = "";
+				// 글자 단위로 split
+				return group
+					.split("")
+					.map((char: string) => {
+						// 언어별 스타일 탐색
+						const { charClass, borderColor, backgroundColor } =
+							this.getCharStyles(char);
 
-							// 종류별 input 색상
-							let borderColor = "";
-							let backgroundColor = "";
+						// 띄어쓰기는 input이 아닌 span 태그로 변환
+						if (char === " ") {
+							return `<span style="display: inline-block; width: 10px;"></span>`;
+						}
 
-							if (/^[a-zA-Z]$/.test(char)) {
-								charClass = "en";
-								borderColor = this.settings.enColor;
-								backgroundColor =
-									this.settings.enBackgroundColor;
-							} else if (/^[0-9]$/.test(char)) {
-								charClass = "num";
-								borderColor = this.settings.numColor;
-								backgroundColor =
-									this.settings.numBackgroundColor;
-							} else if (/^[ㄱ-힣]$/.test(char)) {
-								charClass = "ko";
-								borderColor = this.settings.koColor;
-								backgroundColor =
-									this.settings.koBackgroundColor;
-							} else if (
-								/^[\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Han}]$/u.test(
-									char
-								)
-							) {
-								charClass = "ja";
-								borderColor = this.settings.jaColor;
-								backgroundColor =
-									this.settings.jaBackgroundColor;
-							}
+						// 등록된 언어 외 글자(특수문자 포함)는 그대로 출력
+						if (charClass == "Unsupported language") {
+							return char;
+						}
 
-							// 띄어쓰기는 input이 아닌 span태그로 변환
-							else if (char === " ") {
-								return `<span style="display: inline-block; width: 10px;"></span>`;
-							}
-							// 이외 글자는 특수문자로 취급, 그대로 출력
-							else {
-								return char;
-							}
-							console.log(borderColor);
-							console.log(backgroundColor);
+						// input으로 변환
+						const id = `ch_${inputCounter}`;
+						inputCounter++;
 
-							const id = `ch_${inputCounter}`;
-							inputCounter++;
-							return `<input 
+						return `<input 
 							id="${id}" 
-							class="test-input ${charClass} " 
+							class="test-input ${charClass}" 
 							style="border-color:${borderColor}; background-color:${backgroundColor}" 
 							data-char="${char}"
 							type="text" maxlength="1"/>`;
-						})
-						.join("")
-				);
+					})
+					.join("");
 			}
 		);
 
