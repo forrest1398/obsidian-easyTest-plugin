@@ -94,5 +94,16 @@
 }
 
 .preview-wrapper {
-	margin-left: 10px;
+	margin-left: 50px;
+}
+
+.color-setting-row {
+	display: flex;
+	align-items: center;
+	margin-left: 30px;
+}
+.color-label {
+	margin: 10px;
+	font-weight: 500;
+	font-size: 0.9em;
 }

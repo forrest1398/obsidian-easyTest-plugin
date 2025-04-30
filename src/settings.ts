@@ -13,22 +13,22 @@ export const DEFAULT_SETTINGS: EasyTestSettings = {
 	ko: {
 		title: "Korean",
 		borderColor: "#f4e1c1",
-		backgroundColor: "rgba(244, 225, 193, 0.3)",
+		backgroundColor: "#f4e1c1",
 	},
 	en: {
 		title: "English",
 		borderColor: "#b3e5fc",
-		backgroundColor: "rgba(179, 229, 252, 0.3)",
+		backgroundColor: "#b3e5fc",
 	},
 	ja: {
 		title: "Japanese",
 		borderColor: "#ccaaff",
-		backgroundColor: "rgba(242, 222, 251, 0.3)",
+		backgroundColor: "#f2defb",
 	},
 	num: {
 		title: "Number",
 		borderColor: "#e0e0e0",
-		backgroundColor: "rgba(224, 224, 224, 0.3)",
+		backgroundColor: "#e0e0e0",
 	},
 };
 
@@ -63,34 +63,46 @@ export class EasyTestSettingTab extends PluginSettingTab {
 		// 언어별 설정 생성
 		for (const lang in this.plugin.settings) {
 			const langSetting = this.plugin.settings[lang];
-			const preview = createPreview(lang);
-			previewMap.set(lang, preview);
+			const setting = new Setting(containerEl).setName(
+				`${langSetting.title}`
+			);
 
-			// 설정 폼 추가
-			new Setting(containerEl)
-				.setName(`${langSetting.title}`)
-				.addText((text) => {
-					text.setPlaceholder("Border")
-						.setValue(langSetting.borderColor)
-						.onChange(async (value) => {
-							this.plugin.settings[lang].borderColor = value;
-							await this.plugin.saveSettings();
-							previewMap.get(lang)!.style.borderColor = value;
-						});
-				})
-				.addText((text) => {
-					text.setPlaceholder("Background")
-						.setValue(langSetting.backgroundColor)
-						.onChange(async (value) => {
-							this.plugin.settings[lang].backgroundColor = value;
-							await this.plugin.saveSettings();
+			// Border 설정
+			setting.settingEl.createDiv({ cls: "color-setting-row" }, (div) => {
+				div.createSpan({ text: "Border", cls: "color-label" });
 
-							previewMap.get(lang)!.style.backgroundColor = value;
-						});
-				})
-				.settingEl.createDiv({ cls: "preview-wrapper" }, (div) => {
-					div.appendChild(preview);
+				const borderInput = div.createEl("input", { type: "color" });
+				borderInput.value = langSetting.borderColor;
+				borderInput.addEventListener("input", async (e) => {
+					const value = (e.target as HTMLInputElement).value;
+					this.plugin.settings[lang].borderColor = value;
+					await this.plugin.saveSettings();
+					previewMap.get(lang)!.style.borderColor = value;
 				});
+			});
+
+			// Background 설정
+			setting.settingEl.createDiv({ cls: "color-setting-row" }, (div) => {
+				div.createSpan({ text: "Background", cls: "color-label" });
+
+				const backgroundInput = div.createEl("input", {
+					type: "color",
+				});
+				backgroundInput.value = langSetting.backgroundColor;
+				backgroundInput.addEventListener("input", async (e) => {
+					const value = (e.target as HTMLInputElement).value;
+					this.plugin.settings[lang].backgroundColor = value;
+					await this.plugin.saveSettings();
+					previewMap.get(lang)!.style.backgroundColor = value;
+				});
+			});
+
+			// Preview 추가
+			setting.settingEl.createDiv({ cls: "preview-wrapper" }, (div) => {
+				const preview = createPreview(lang);
+				previewMap.set(lang, preview);
+				div.appendChild(preview);
+			});
 		}
 	}
 }
