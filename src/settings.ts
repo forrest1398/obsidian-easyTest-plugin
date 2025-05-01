@@ -46,19 +46,8 @@ export class EasyTestSettingTab extends PluginSettingTab {
 		containerEl.empty();
 		containerEl.createEl("h1", { text: "Input Box Color Settings" });
 
-		// 언어별 프리뷰 맵 생성
+		// Input 프리뷰 맵 생성
 		const previewMap = new Map<string, HTMLInputElement>();
-
-		// input 프리뷰 생성 함수
-		const createPreview = (lang: string) => {
-			const preview = document.createElement("input");
-			preview.type = "text";
-			preview.addClass("test-input");
-			preview.style.borderColor = this.plugin.settings[lang].borderColor;
-			preview.style.backgroundColor =
-				this.plugin.settings[lang].backgroundColor;
-			return preview;
-		};
 
 		// 언어별 설정 생성
 		for (const lang in this.plugin.settings) {
@@ -99,10 +88,21 @@ export class EasyTestSettingTab extends PluginSettingTab {
 
 			// Preview 추가
 			setting.settingEl.createDiv({ cls: "preview-wrapper" }, (div) => {
-				const preview = createPreview(lang);
+				const preview = this.createPreview(lang);
 				previewMap.set(lang, preview);
 				div.appendChild(preview);
 			});
 		}
+	}
+
+	// 언어별 Input 프리뷰 생성 함수
+	createPreview(language: string) {
+		const preview = document.createElement("input");
+		preview.type = "text";
+		preview.addClass("test-input");
+		preview.style.borderColor = this.plugin.settings[language].borderColor;
+		preview.style.backgroundColor =
+			this.plugin.settings[language].backgroundColor;
+		return preview;
 	}
 }
